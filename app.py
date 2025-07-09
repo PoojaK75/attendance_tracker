@@ -143,8 +143,21 @@ def search_in_sheet(query, amenity, month):
 
 
     for row in ws.iter_rows(min_row=2, values_only=True):
+        name, flat, id, purpose, date_str, in_time, out_time = row
         if ((query.lower() in str(row[0]).lower() or query.lower() in str(row[1]).lower()) and amenity.lower() in str(row[3]).lower()):
-            results.append(row)
+            try:
+                fmt = "%H: %M"
+                if in_time and out_time:
+                    in_dt = datetime.strptime(in_time, fmt)
+                    out_dt = datetime.strptime(out_time, fmt)
+                    delta = out_dt - in_dt
+                    time_spent = str(delta)
+                else:
+                    time_spent = "N/A"
+            except Exception:
+                time_spent = "Error"
+
+            results.append(name, flat, id, purpose, date_str, in_time, out_time, time_spent)
 
     return results                 
 
