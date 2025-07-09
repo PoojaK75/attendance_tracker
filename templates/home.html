@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ivy Apartments</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
+
+        .background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            z-index: -2;
+        }
+
+        .background div {
+            background-size: cover;
+            background-position: center;
+        }
+
+        .img1 { background-image: url("{{ url_for('static', filename='images/gym1.jpg') }}"); }
+        .img2 { background-image: url("{{ url_for('static', filename='images/sp.jfif') }}"); }
+        .img3 { background-image: url("{{ url_for('static', filename='images/tt.jpg') }}"); }
+        .img4 { background-image: url("{{ url_for('static', filename='images/carrom.jpg') }}"); }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* darkens the background */
+            z-index: -1;
+        }
+
+        .content {
+            padding: 40px;
+            color: white;
+        }
+
+        label {
+            color: white;
+        }
+
+        table {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background collage -->
+    <div class="background">
+        <div class="img1"></div>
+        <div class="img2"></div>
+        <div class="img3"></div>
+        <div class="img4"></div>
+    </div>
+    <div class="overlay"></div>
+
+    <!-- Main content -->
+    <div class="content">
+        <h2>Welcome to Ivy Apartments</h2>
+        <h3>Enter Your Attendance</h3>
+        <form method="POST" action="/attendance">
+            <table>
+                <tr><td><label for="name">Name</label></td><td><input type="text" id="name" name="name" required></td></tr>
+                <tr><td><label for="flat">Flat</label></td><td><input type="text" id="flat" name="flat" required></td></tr>
+                <tr><td><label for="id">ID</label></td><td><input type="number" id="id" name="id" required></td></tr>
+                <tr><td><label for="purpose">Purpose</label></td>
+                    <td><select name="purpose" required>
+                        <option value="">--Select--</option>
+                        <option value="Gym">Gym</option>
+                        <option value="Carroms">Carroms</option>
+                        <option value="Table Tennis">Table Tennis</option>
+                        <option value="Swimming Pool">Swimming Pool</option>
+                    </select></td></tr>
+                <tr><td><label for="action">Action</label></td>
+                    <td><select name="action" required>
+                        <option value="">--Select--</option>
+                        <option value="in">Check In</option>
+                        <option value="out">Check Out</option>
+                    </select></td></tr>
+                <tr><td colspan="2" style="text-align:center"><button type="submit">Submit</button></td></tr>
+            </table>
+        </form>
+
+        <br><br>
+
+        <!-- Search Attendance -->
+        <form method="GET" action="/attendance">
+            <h3>Search Your Attendance</h3>
+            <label for="query">Search by Name or Flat:</label>
+            <input type="text" name="query" required />
+            <select name="amenity" required>
+                <option value="">--Select Amenity--</option>
+                <option value="Gym">Gym</option>
+                <option value="Carroms">Carroms</option>
+                <option value="Table Tennis">Table Tennis</option>
+                <option value="Swimming Pool">Swimming Pool</option>
+            </select>
+            <select name="month" required>
+                <option value="">--Select Month--</option>
+                {% for month in months %}
+                    <option value="{{ month }}">{{ month.replace('_', ' ') }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+
+        {% if results %}
+        <h4>Search Results:</h4>
+        <table border="1">
+            <tr><th>Name</th><th>Flat</th><th>ID</th><th>Purpose</th><th>Date</th><th>In-Time</th><th>Out-Time</th></tr>
+            {% for row in results %}
+            <tr>{% for item in row %}<td>{{ item }}</td>{% endfor %}</tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>
