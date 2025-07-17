@@ -9,7 +9,10 @@ hooks:
     - location: cleanup.sh
       timeout: 60
       runas: ec2-user
+    - location: chmod.sh
+      timeout: 60
+      runas: root
   AfterInstall:
     - location: deploy.sh
       timeout: 300
-      runas: root
+      runas: ec2-user
