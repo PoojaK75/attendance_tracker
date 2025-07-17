@@ -1,38 +1,25 @@
-name: Deploy to AWS EC2
+#!/bin/bash
 
-on:
-  push:
-    branches:
-      - main
+# Navigate to app directory
+cd /home/ec2-user/attendance_tracker || exit 1
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# Stop any running app
+echo "Stopping existing Flask app if running..."
+pkill -f app.py || true
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+# Setup virtual environment
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv venv
+fi
 
-      - name: Copy Files to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          port: 22
-          source: "."
-          target: "~/attendance_tracker"
+source venv/bin/activate
 
-      - name: SSH and deploy
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          port: 22
-          script: |
-            cd ~/attendance_tracker
-            source venv/bin/activate
-            pip install -r requirements.txt
-            pkill -f app.py || true
-            nohup python3 app.py > output.log 2>&1 &
+# Install/update dependencies
+echo "Installing dependencies..."
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Restart the app
+echo "Starting Flask app..."
+nohup python3 app.py > app.log 2>&1 &
