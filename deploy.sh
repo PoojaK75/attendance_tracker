@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd /home/ec2-user/attendance_tracker || exit 1
 
 # Stop any running app
