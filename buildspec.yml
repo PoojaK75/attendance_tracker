@@ -21,6 +21,9 @@ phases:
 
   post_build:
     commands:
+      - echo "[POST-BUILD] Packaging app..."
+      - zip -r ivyProject.zip * .[^.]* || true
+      - echo "[POST-BUILD] Uploading artifacts..."
       - echo Build completed on `date`.
 
 artifacts:
