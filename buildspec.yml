@@ -22,7 +22,7 @@ phases:
   post_build:
     commands:
       - echo "[POST-BUILD] Packaging app..."
-      - zip -r ivyProject.zip * .[^.]* || true
+      - zip -r ivyProject.zip app.py templates/ static/ sheets/ requirements.txt deploy.sh cleanup.sh chmod.sh || true
       - echo "[POST-BUILD] Uploading artifacts..."
       - echo Build completed on `date`.
 
