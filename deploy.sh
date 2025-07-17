@@ -34,5 +34,5 @@ jobs:
             cd ~/attendance_tracker
             source venv/bin/activate
             pip install -r requirements.txt
-            pkill -f "app.py" || true
+            pkill -f app.py || true
             nohup python3 app.py > output.log 2>&1 &
